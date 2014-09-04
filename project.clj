@@ -9,4 +9,5 @@
                  [javax.servlet/servlet-api "2.5"]]
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [org.slf4j/slf4j-log4j12 "1.7.7"]]
-                   :plugins [[lein-midje "3.1.1"]]}})
+                   :plugins [[lein-midje "3.1.1"]]}}
+  :repositories {"releases" {:url "s3p://rk-maven/releases/"}})
