@@ -1,6 +1,8 @@
-(defproject com.roomkey/flux "0.6.0-rk"
+(defproject com.roomkey/flux :lein-v
   :description "A clojure client library for Solr"
   :url "https://github.com/roomkey/flux"
+  :plugins [[s3-wagon-private "1.1.2"]
+            [com.roomkey/lein-v "3.3.4"]]
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
