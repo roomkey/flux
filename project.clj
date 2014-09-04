@@ -1,4 +1,4 @@
-(defproject com.codesignals/flux "0.5.1"
+(defproject com.roomkey/flux "0.6.0-rk"
   :description "A clojure client library for Solr"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
