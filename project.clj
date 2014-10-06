@@ -1,7 +1,7 @@
 (defproject com.roomkey/flux :lein-v
   :description "A clojure client library for Solr"
   :url "https://github.com/roomkey/flux"
-  :plugins [[s3-wagon-private "1.1.2"]
+  :plugins [[lein-maven-s3-wagon "0.2.3"]
             [com.roomkey/lein-v "3.3.4"]]
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
@@ -12,4 +12,4 @@
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [org.slf4j/slf4j-log4j12 "1.7.7"]]
                    :plugins [[lein-midje "3.1.1"]]}}
-  :repositories {"releases" {:url "s3p://rk-maven/releases/"}})
+  :repositories {"releases" {:url "s3://rk-maven/releases/"}})
