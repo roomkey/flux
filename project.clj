@@ -12,4 +12,4 @@
   :profiles {:dev {:dependencies [[midje "1.6.3"]
                                   [org.slf4j/slf4j-log4j12 "1.7.7"]]
                    :plugins [[lein-midje "3.1.1"]]}}
-  :repositories {"releases" {:url "s3://rk-maven/releases/"}})
+  :repositories {"rk-public" {:url "http://rk-maven-public.s3-website-us-east-1.amazonaws.com/releases/"} "releases" {:url "s3://rk-maven/releases/"}})
