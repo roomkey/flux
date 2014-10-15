@@ -1,7 +1,7 @@
-(ns flux.unit.response
+(ns flux.unit.convert
   (:import [org.apache.solr.common.util NamedList])
   (:require [flux.update :as update]
-            [flux.response :refer :all]
+            [flux.convert :refer :all]
             [midje.sweet :refer :all]))
 
 (fact "create-map-from-document"
