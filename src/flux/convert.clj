@@ -23,6 +23,10 @@
   (->clojure [obj]
     obj)
 
+  nil
+  (->clojure [obj]
+    obj)
+
   SimpleOrderedMap
   (->clojure [obj]
     (reduce
