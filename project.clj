@@ -1,7 +1,7 @@
 (defproject com.roomkey/flux :lein-v
   :description "A clojure client library for Solr"
   :url "https://github.com/roomkey/flux"
-  :plugins [[lein-maven-s3-wagon "0.2.3"]
+  :plugins [[lein-maven-s3-wagon "0.2.4"]
             [com.roomkey/lein-v "3.3.4"]]
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
