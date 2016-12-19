@@ -2,7 +2,8 @@
   :description "A clojure client library for Solr"
   :url "https://github.com/roomkey/flux"
   :plugins [[com.roomkey/lein-v "6.0.2"]]
-  :repositories {"rk-public" {:url "http://rk-maven-public.s3-website-us-east-1.amazonaws.com/releases/"}}
+  :repositories {"rk-public" {:url "http://rk-maven-public.s3-website-us-east-1.amazonaws.com/releases/"}
+                 "releases"  {:url "s3://rk-maven/releases/"}}
   :release-tasks [["vcs" "assert-committed"]
                   ["v" "update"] ;; compute new version & tag it
                   ["vcs" "push"]
