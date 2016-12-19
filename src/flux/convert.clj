@@ -3,7 +3,7 @@
            [org.apache.solr.common.util NamedList SimpleOrderedMap]
            [org.apache.solr.common SolrDocumentList SolrDocument]
            [org.apache.solr.common SolrInputDocument]
-           [java.util ArrayList]))
+           [java.util ArrayList LinkedHashMap]))
 
 (defprotocol ToKey
   (->key [_] "Convert the object to a proper key for a Clojure value."))
@@ -37,14 +37,15 @@
 
   NamedList
   (->clojure [obj]
-    (into {}
-          (mapv
-           (fn [^java.util.Map$Entry o] (vector (->key (.getKey o)) (->clojure (.getValue o))))
-           (iterator-seq (.iterator obj)))))
+    (into {} (for [[k v] obj] [(keyword k) (->clojure v)])))
 
   ArrayList
   (->clojure [obj]
     (mapv ->clojure obj))
+
+  LinkedHashMap
+  (->clojure [obj]
+    (into {} (for [[k v] obj] [(keyword k) (->clojure v)])))
 
   SolrDocumentList
   (->clojure [obj]
