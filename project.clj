@@ -9,6 +9,7 @@
                  [org.apache.solr/solr-solrj "4.10.4"]
                  [javax.servlet/servlet-api "2.5"]]
   :profiles {:dev {:dependencies [[midje "1.6.3"]
-                                  [org.slf4j/slf4j-log4j12 "1.7.7"]]
-                   :plugins [[lein-midje "3.1.1"]]}}
-  :repositories {"rk-public" {:url "http://rk-maven-public.s3-website-us-east-1.amazonaws.com/releases/"} "releases" {:url "s3://rk-maven/releases/"}})
+                                  [org.slf4j/slf4j-log4j12 "1.7.7"]
+                                  [commons-logging "1.1.3"]]
+                   :resource-paths ["dev-resources"]
+                   :plugins [[lein-midje "3.1.1"]]}})
