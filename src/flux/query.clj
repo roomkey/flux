@@ -1,5 +1,5 @@
 (ns flux.query
-  (import [org.apache.solr.common.params MultiMapSolrParams]
+  (:import [org.apache.solr.common.params MultiMapSolrParams]
           [org.apache.solr.client.solrj.request QueryRequest]
           [org.apache.solr.client.solrj SolrRequest$METHOD]))
 

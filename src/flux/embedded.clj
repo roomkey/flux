@@ -1,5 +1,5 @@
 (ns flux.embedded
-  (import [java.io File]
+  (:import [java.io File]
           [org.apache.solr.client.solrj.embedded EmbeddedSolrServer]
           [org.apache.solr.core CoreContainer]
           [java.nio.file Paths]
