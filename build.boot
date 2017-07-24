@@ -1,13 +1,64 @@
+(defn deps->pom-deps [deps]
+  (map (fn [[dep-name {:keys [version] :as opts}]]
+         (let [opts-seq (apply concat (dissoc opts :version))]
+           (concat [dep-name version] opts-seq))) deps))
+
+
+(defn deps []
+  (-> (slurp "deps.edn")
+    (read-string)
+    (:deps)
+    (deps->pom-deps)))
+
+
 (set-env!
   :source-paths #{"src"}
-  :dependencies
-  '[[org.clojure/clojure "1.9.0-alpha17" :scope "provided"]
-    [org.apache.solr/solr-core "5.4.0" :exclusions [joda-time org.slf4j/slf4j-api]]
-    [org.apache.solr/solr-solrj "5.4.0" :exclusions [org.slf4j/slf4j-api]]])
+  :dependencies (deps)
+  :wagons       '[[s3-wagon-private "1.2.0"]]
+  :repositories #(conj %
+                   ["releases" {:url        "s3://rk-maven/releases/"
+                                :username   (System/getenv "AWS_ACCESS_KEY_ID")
+                                :passphrase (System/getenv "AWS_SECRET_ACCESS_KEY")}]))
 
 
-(deftask dev-repl []
+(task-options!
+  pom {:project     'com.roomkey/flux
+       :description "A clojure client library for Solr"
+       :url         "https://github.com/roomkey/flux"
+       :scm         {:url "https://github.com/roomkey/flux"}})
+
+
+(require
+  '[boot-v.core :as v :refer :all])
+
+
+(deftask dev-env []
   (set-env!
-    :resources    #(conj % "dev-resources")
-    :dependencies #(conj % '[org.slf4j/slf4j-log4j12 "1.7.22"]))
-  (repl))
+    :resources #(conj % "dev-resources"))
+  identity)
+
+
+(deftask test-env []
+  (set-env!
+    :source-paths   #(conj % "test"))
+  identity)
+
+
+
+;; Release ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(deftask build []
+  (merge-env! :resource-paths #{"src"})
+  (comp
+    (v/set-pom-version)
+    (pom)
+    (jar)
+    (install)))
+
+
+(deftask release
+  [u update KEYWORD kw "Versioning parameter: :minor, :major, :patch..."]
+  (comp
+    (v/v :update update)
+    (build)
+    (push :repo "releases")))
