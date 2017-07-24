@@ -1,11 +1,6 @@
 * flux
-  :PROPERTIES:
-  :CUSTOM_ID: flux
-  :END:
-
 A Clojure based Solr client. The latest stable version of flux is 0.6.0,
 which supports Solr =4.9.0=.
-
 ** Installation (Leiningen)
    :PROPERTIES:
    :CUSTOM_ID: installation-leiningen
@@ -18,15 +13,7 @@ To include the Flux library, add the following to your =:dependencies=:
 #+END_EXAMPLE
 
 ** Usage
-   :PROPERTIES:
-   :CUSTOM_ID: usage
-   :END:
-
 *** Http
-    :PROPERTIES:
-    :CUSTOM_ID: http
-    :END:
-
 #+BEGIN_SRC clojure
     (require '[flux.http :as http])
 
@@ -183,31 +170,21 @@ Now create the embedded server instance:
 #+END_SRC
 
 *** Client
-    :PROPERTIES:
-    :CUSTOM_ID: client
-    :END:
-
-Once a connection as been created, use the =with-connection= macro to
-wrap client calls:
-
 #+BEGIN_SRC clojure
-    (require '[flux.client :as flux]
-              [flux.query :as q])
+  (require
+    '[flux.client :as flux]
+    '[flux.query :as q])
 
-    (flux/with-connection conn
-        (flux/add [{:id 1} {:id 2}])
-        (flux/commit)
-        (flux/query "*:*")
-        ;; Or set the path and/or method:
-        (flux/request
-          (q/create-query-request :post "/docs" {:q "etc"}))
+  (flux/add conn [{:id 1} {:id 2}])
+  (flux/commit conn)
+  (flux/query conn "*:*")
+  ;; Or set the path and/or method:
+  (flux/request conn
+    (q/create-query-request :post "/docs" {:q "etc"}))
 #+END_SRC
 
+** Development
 *** Test
-    :PROPERTIES:
-    :CUSTOM_ID: test
-    :END:
-
 #+BEGIN_EXAMPLE
     lein midje
 #+END_EXAMPLE
