@@ -1,11 +1,14 @@
 (ns flux.client
-  (:require [flux.update :refer [create-doc]]
-           [flux.query :refer [create-query]]
-           [flux.convert :refer [->clojure]])
-  (:import [org.apache.solr.client.solrj SolrServer]
-          [org.apache.solr.common SolrInputDocument]))
+  (:require
+   [flux.update :refer [create-doc]]
+   [flux.query :refer [create-query]]
+   [flux.convert :refer [->clojure]])
+  (:import
+   [org.apache.solr.client.solrj SolrServer]
+   [org.apache.solr.common SolrInputDocument]))
 
-(defn query [^SolrServer solr-server query & [options]]
+(defn query
+  [^SolrServer solr-server query & [options]]
   (->clojure (.query solr-server (create-query query options))))
 
 (defn request [^SolrServer solr-server request]
@@ -30,7 +33,7 @@
           (cond (keyword? x) (name x) :else (str x)))]
   (defn delete-by-id [^SolrServer client ids & {:as opts}]
     (->clojure
-     (let [ids (if (coll? ids) (map v ids) (v ids))]
+      (let [ids (if (coll? ids) (map v ids) (v ids))]
       (.deleteById ^SolrServer client ^java.util.List ids)))))
 
 (defn delete-by-query [^SolrServer client q & {:as opts}]
