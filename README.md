@@ -10,7 +10,7 @@ To include the Flux library, add the following to your `:dependencies`:
 
 ## Usage
 
-###Http
+### Http
 
 ```clojure
 (require '[flux.http :as http])
@@ -18,7 +18,7 @@ To include the Flux library, add the following to your `:dependencies`:
 (def conn (http/create "http://localhost:8983/solr" :collection1))
 ```
 
-###Cloud
+### Cloud
 Create a connection to SolrCloud using one zk host:
 
 ```clojure
@@ -124,7 +124,7 @@ Wait for all replicas of a given collection hosted by a particular host/port to 
 (wait-until-active conn "my-solr-collection" "host1:8983")
 ```
 
-###Embedded
+### Embedded
 
 ```clojure
 (require '[flux.embedded :as embedded])
@@ -132,7 +132,7 @@ Wait for all replicas of a given collection hosted by a particular host/port to 
 (def cc (embedded/create-core-container "path/to/solr-home" "path/to/solr.xml"))
 ```
 
-####Core auto-discovery
+#### Core auto-discovery
 Flux also supports `core.properties`. Just give `create-core` the solr-home path as the only argument.
 
   Note: It's important to call the `load` method on the resulting `CoreContainer` instance:
@@ -148,7 +148,7 @@ Now create the embedded server instance:
 (def conn (embedded/create cc :collection1))
 ```
 
-###Client
+### Client
 Once a connection as been created, use the `with-connection` macro to wrap client calls:
 
 ```clojure
@@ -164,7 +164,7 @@ Once a connection as been created, use the `with-connection` macro to wrap clien
       (q/create-query-request :post "/docs" {:q "etc"}))
 ```
 
-###Test
+### Test
 ```shell
 lein midje
 ```
