@@ -1,3 +1,15 @@
+(defn deps->pom-deps [deps]
+  (map (fn [[dep-name {:keys [version] :as opts}]]
+         (let [opts-seq (apply concat (dissoc opts :version))]
+           (concat [dep-name version] opts-seq))) deps))
+
+(defn deps []
+  (-> (slurp "deps.edn")
+    (read-string)
+    (:deps)
+    (deps->pom-deps)))
+
+
 (defproject com.roomkey/flux :lein-v
   :description "A clojure client library for Solr"
   :url "https://github.com/roomkey/flux"
@@ -9,10 +21,6 @@
                   ["vcs" "push"]
                   ["deploy"]]
   :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.apache.solr/solr-core "5.4.0" :exclusions [joda-time org.slf4j/slf4j-api]]
-                 [org.apache.solr/solr-solrj "5.4.0" :exclusions [org.slf4j/slf4j-api]]]
-  :profiles {:dev {:dependencies [[midje "1.8.3"]
-                                  [org.slf4j/slf4j-log4j12 "1.7.22"]]
-                   :resource-paths ["dev-resources"]}})
+            :url  "http://www.eclipse.org/legal/epl-v10.html"}
+  :dependencies ~(deps)
+  :profiles {:dev {:resource-paths ["dev-resources"]}})

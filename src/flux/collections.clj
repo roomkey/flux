@@ -35,10 +35,10 @@
   [[_ {:strs [node_name]}]]
   node_name)
 
-(letfn [ ;; Returns the solr node name for given host/port
+(letfn [;; Returns the solr node name for given host/port
         (solr-node-name [host-port]
           (str host-port "_solr"))]
-  
+
   (defn hosted-by?
     "Returns true if given replica is hosted locally by given host/port"
     [replica host-port]
@@ -54,7 +54,7 @@
             (all-replicas connection collection)
             ;; TODO: catch specific exc.. not throwable
             (catch Throwable _ {})))]
-  
+
   (defn wait-until-active
     "Waits (infinitely) until all solr replicas hosted by given host/port belonging to given collection are in active state"
     [connection collection host-port]

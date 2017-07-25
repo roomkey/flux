@@ -1,0 +1,198 @@
+* flux
+A Clojure based Solr client. The latest stable version of flux supports Solr =4.9.0=.
+** Installation (Leiningen)
+   :PROPERTIES:
+   :CUSTOM_ID: installation-leiningen
+   :END:
+
+To include the Flux library, add the following to your =:dependencies=:
+
+#+BEGIN_EXAMPLE
+    [com.codesignals/flux "0.8.0"]
+#+END_EXAMPLE
+
+** Usage
+*** Http
+#+BEGIN_SRC clojure
+    (require '[flux.http :as http])
+
+    (def conn (http/create "http://localhost:8983/solr" :collection1))
+#+END_SRC
+
+*** Cloud
+    :PROPERTIES:
+    :CUSTOM_ID: cloud
+    :END:
+
+Create a connection to SolrCloud using one zk host:
+
+#+BEGIN_SRC clojure
+    (require '[flux.cloud :as cloud]
+              [flux.collections :as cloud-api)
+
+    (def conn (cloud/create "zk1:2181"))
+#+END_SRC
+
+Create a connection to SolrCloud using multiple zk hosts (for failover):
+
+#+BEGIN_SRC clojure
+    (def conn (cloud/create "zk1:2181,zk2:2181,zk3:2181"))
+#+END_SRC
+
+Create a connection to SolrCloud using multiple zk hosts (for failover)
+and a chroot:
+
+#+BEGIN_SRC clojure
+    (def conn (cloud/create "zk1:2181,zk2:2181,zk3:2181/mysolrchroot"))
+#+END_SRC
+
+Create a connection to SolrCloud using zk and specify a default
+collection
+
+#+BEGIN_SRC clojure
+    (def conn (cloud/create "zk1:2181,zk2:2181,zk3:2181/mysolrchroot" "name-of-collection"))
+#+END_SRC
+
+Create a new SolrCloud collection with 4 shards:
+
+#+BEGIN_SRC clojure
+    (cloud-api/create-collection conn "my-solr-collection" 4)
+#+END_SRC
+
+Create a new SolrCloud collection with 4 shards and replication factor
+of 2:
+
+#+BEGIN_SRC clojure
+    (cloud-api/create-collection conn "my-solr-collection" 4 2)
+#+END_SRC
+
+Create a new SolrCloud collection with 4 shards and replication factor
+of 2 and additional parameters:
+
+#+BEGIN_SRC clojure
+    (cloud-api/create-collection conn "my-solr-collection" 4 2 { "collection.configName" "schemaless"
+                                                      "router.name" "implicit"
+                                                      "shards" "x,y,z,p"
+                                                      "maxShardsPerNode" 10})
+#+END_SRC
+
+The SolrCloud connection is thread-safe and it is recommended that you
+create just one and re-use it across all requests.
+
+Remember to shutdown the connection on exit:
+
+#+BEGIN_SRC clojure
+  (flux.client/shutdown conn)
+#+END_SRC
+
+Delete a SolrCloud collection:
+
+#+BEGIN_SRC clojure
+    (cloud-api/delete-collection conn "my-solr-collection")
+#+END_SRC
+
+Get a list of active replicas of a collection:
+
+#+BEGIN_SRC clojure
+    (filter active? (all-replicas conn "collection1"))
+#+END_SRC
+
+Get a list of not-active replicas (either down or recovering) of a
+collection:
+
+#+BEGIN_SRC clojure
+    (filter not-active? (all-replicas conn "collection1"))
+#+END_SRC
+
+Get a list of down replicas of a collection:
+
+#+BEGIN_SRC clojure
+    (filter down? (all-replicas conn "collection1"))
+#+END_SRC
+
+Get a list of recovering replicas of a collection:
+
+#+BEGIN_SRC clojure
+    (filter recovering? (all-replicas conn "collection1"))
+#+END_SRC
+
+Get a list of replicas of a collection hosted by host/port:
+
+#+BEGIN_SRC clojure
+    (filter (fn [x] (hosted-by? x "127.0.1.1:8983")) (all-replicas conn "collection1"))
+#+END_SRC
+
+Get a list of leaders of a particular collection:
+
+#+BEGIN_SRC clojure
+    (filter leader? (all-replicas conn "collection1"))
+#+END_SRC
+
+Wait for all replicas of a given collection hosted by a particular
+host/port to be in 'active' state:
+
+#+BEGIN_SRC clojure
+    (wait-until-active conn "my-solr-collection" "host1:8983")
+#+END_SRC
+
+*** Embedded
+    :PROPERTIES:
+    :CUSTOM_ID: embedded
+    :END:
+
+#+BEGIN_SRC clojure
+    (require '[flux.embedded :as embedded])
+
+    (def cc (embedded/create-core-container "path/to/solr-home" "path/to/solr.xml"))
+#+END_SRC
+
+**** Core auto-discovery
+     :PROPERTIES:
+     :CUSTOM_ID: core-auto-discovery
+     :END:
+
+Flux also supports =core.properties=. Just give =create-core= the
+solr-home path as the only argument.
+
+Note: It's important to call the =load= method on the resulting
+=CoreContainer= instance:
+
+#+BEGIN_SRC clojure
+    (def cc (doto (embedded/create-core-container "path/to/solr-home")
+                  (.load))
+#+END_SRC
+
+Now create the embedded server instance:
+
+#+BEGIN_SRC clojure
+    (def conn (embedded/create cc :collection1))
+#+END_SRC
+
+*** Client
+#+BEGIN_SRC clojure
+  (require
+    '[flux.client :as flux]
+    '[flux.query :as q])
+
+  (flux/add conn [{:id 1} {:id 2}])
+  (flux/commit conn)
+  (flux/query conn "*:*")
+  ;; Or set the path and/or method:
+  (flux/request conn
+    (q/create-query-request :post "/docs" {:q "etc"}))
+#+END_SRC
+
+** Development
+*** Test
+#+BEGIN_EXAMPLE
+    lein midje
+#+END_EXAMPLE
+
+** License
+   :PROPERTIES:
+   :CUSTOM_ID: license
+   :END:
+
+Copyright © 2013-2014 Matt Mitchell
+
+Distributed under the Eclipse Public License, the same as Clojure.
