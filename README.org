@@ -82,7 +82,7 @@ create just one and re-use it across all requests.
 Remember to shutdown the connection on exit:
 
 #+BEGIN_SRC clojure
-    (flux/with-connection conn (flux/shutdown))
+  (flux.client/shutdown conn)
 #+END_SRC
 
 Delete a SolrCloud collection:
