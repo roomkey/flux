@@ -1,13 +1,13 @@
 (ns flux.unit.convert
   (:import [org.apache.solr.common.util NamedList])
   (:require [flux.update :as update]
-            [flux.convert :refer :all]
-            [midje.sweet :refer :all]))
+            [flux.convert :as convert]
+            [flux.spec :as spec]
+            [clojure.spec.alpha :as s]
+            [clojure.spec.test.alpha :as stest]))
 
-(fact "create-map-from-document"
-  (let [doc (update/create-doc {:id 1})]
-    (->clojure doc) => {:id 1}))
+(stest/check `update/create-doc)
 
-(fact "Convert named list"
+#_(fact "Convert named list"
   (let [nl (NamedList. (into-array {"a" 1 "b" 2}))]
     (->clojure nl) => {:a 1 :b 2}))
