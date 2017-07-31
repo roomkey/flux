@@ -185,7 +185,7 @@ Now create the embedded server instance:
 ** Development
 *** Test
 #+BEGIN_EXAMPLE
-    lein midje
+    boot test-env run-tests
 #+END_EXAMPLE
 
 ** License

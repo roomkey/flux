@@ -6,7 +6,9 @@
           [java.net URI]))
 
 (defn- str->path [str-path]
-  (-> str-path File. .toURI Paths/get))
+  (-> (File. str-path)
+    (.toURI)
+    (Paths/get)))
 
 (defn create-core-container
   "Creates a CoreContainer from a solr-home path and solr-config.xml path
@@ -15,11 +17,10 @@
    core.properties discovery mode.
    See: org.apache.solr.core.CoreLocator
         and
-        http://wiki.apache.org/solr/Core%20Discovery%20(4.4%20and%20beyond)
-   Note: If using core.properties only, it is required to call (.load core-container)
-         before creating the EmbeddedSolrServer instance."
+        http://wiki.apache.org/solr/Core%20Discovery%20(4.4%20and%20beyond)"
   ([^String solr-home]
-   (CoreContainer. solr-home))
+   (CoreContainer/createAndLoad
+     (str->path solr-home)))
   ([^String solr-home-path ^String solr-config-path]
    (CoreContainer/createAndLoad
     (str->path solr-home-path)

@@ -29,7 +29,8 @@
 
 
 (require
-  '[boot-v.core :as v :refer :all])
+  '[boot-v.core :as v :refer :all]
+  '[metosin.boot-alt-test :refer [alt-test] :rename {alt-test run-tests}])
 
 
 (deftask dev-env []
@@ -40,7 +41,7 @@
 
 (deftask test-env []
   (set-env!
-    :source-paths   #(conj % "test"))
+    :source-paths #(conj % "test"))
   identity)
 
 

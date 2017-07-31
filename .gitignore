@@ -12,3 +12,7 @@ pom.xml
 /pom.xml.asc
 .idea
 *.iml
+
+# solr files
+*.bak
+test/resources/solr/cores/*/data/*
