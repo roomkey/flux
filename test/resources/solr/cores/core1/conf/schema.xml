@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema name="test1" version="1.0">
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="fields.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="field_types.xml"/>
+
+  <uniqueKey>id</uniqueKey>
+
+  <fields>
+    <field name="name" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="code" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="is_primary" stored="true" type="boolean" multiValued="false" indexed="true"/>
+  </fields>
+
+  <copyFields>
+    <copyField source="name" dest="name_text"/>
+    <copyField source="code" dest="code_text"/>
+  </copyFields>
+
+</schema>

@@ -15,7 +15,7 @@
     (fn [^SolrInputDocument doc k v]
       (doto doc
         (.addField (stringify-key k) v)))
-    (SolrInputDocument.)
+    (SolrInputDocument. (java.util.HashMap.))
     document-map))
 
 (defmethod print-method SolrInputDocument [^SolrInputDocument v ^java.io.Writer w]

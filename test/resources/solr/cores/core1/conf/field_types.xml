@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<types>
+
+  <fieldType name="startsWith" class="solr.TextField" positionIncrementGap="100">
+    <analyzer type="index">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <!-- remove words/chars we don't care about -->
+      <filter class="solr.PatternReplaceFilterFactory" pattern="[^a-zA-Z0-9 ]" replacement="" replace="all"/>
+      <!-- now remove any extra space we have, since spaces WILL influence matching -->
+      <filter class="solr.PatternReplaceFilterFactory" pattern="\s+" replacement=" " replace="all"/>
+      <filter class="solr.TrimFilterFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory"/>
+      <filter class="solr.EdgeNGramFilterFactory" minGramSize="1" maxGramSize="50"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="[^a-zA-Z0-9 ]" replacement="" replace="all"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="\s+" replacement=" " replace="all"/>
+      <filter class="solr.TrimFilterFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory"/>
+    </analyzer>
+  </fieldType>
+
+  <fieldType name="startsWithAnywhere" class="solr.TextField" positionIncrementGap="100">
+    <analyzer type="index">
+      <tokenizer class="solr.PatternTokenizerFactory" pattern="[^a-zA-Z0-9]" />
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <!-- remove words/chars we don't care about -->
+      <filter class="solr.PatternReplaceFilterFactory" pattern="[^a-zA-Z0-9 ]" replacement="" replace="all"/>
+      <!-- now remove any extra space we have, since spaces WILL influence matching -->
+      <filter class="solr.PatternReplaceFilterFactory" pattern="\s+" replacement=" " replace="all"/>
+      <filter class="solr.TrimFilterFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory"/>
+      <filter class="solr.EdgeNGramFilterFactory" minGramSize="1" maxGramSize="50"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.PatternTokenizerFactory" pattern="[^a-zA-Z0-9]" />
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="[^a-zA-Z0-9 ]" replacement="" replace="all"/>
+      <filter class="solr.PatternReplaceFilterFactory" pattern="\s+" replacement=" " replace="all"/>
+      <filter class="solr.TrimFilterFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory"/>
+    </analyzer>
+  </fieldType>
+
+  <fieldType name="text" class="solr.TextField" omitNorms="false">
+    <analyzer>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.StandardFilterFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+
+  <fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
+  <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
+  <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0"/>
+  <fieldType name="float" class="solr.TrieFloatField" precisionStep="0" positionIncrementGap="0"/>
+  <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
+  <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0" positionIncrementGap="0"/>
+  <fieldType name="sint" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0" sortMissingLast="true" omitNorms="true"/>
+  <!--
+      Numeric field types that index each value at various levels of precision
+      to accelerate range queries when the number of values between the range
+      endpoints is large. See the javadoc for NumericRangeQuery for internal
+      implementation details.
+
+Smaller precisionStep values (specified in bits) will lead to more tokens
+indexed per value, slightly larger index size, and faster range queries.
+A precisionStep of 0 disables indexing at different precision levels.
+  -->
+  <fieldType name="tint" class="solr.TrieIntField" precisionStep="8" positionIncrementGap="0"/>
+  <fieldType name="tintLast" class="solr.TrieIntField" omitNorms="true" sortMissingLast="true"/>
+  <fieldType name="tfloat" class="solr.TrieFloatField" precisionStep="8" positionIncrementGap="0"/>
+  <fieldType name="tlong" class="solr.TrieLongField" precisionStep="8" positionIncrementGap="0"/>
+  <fieldType name="tdouble" class="solr.TrieDoubleField" precisionStep="8" positionIncrementGap="0"/>
+  <!-- The format for this date field is of the form 1995-12-31T23:59:59Z, and
+       is a more restricted form of the canonical representation of dateTime
+       http://www.w3.org/TR/xmlschema-2/#dateTime
+       The trailing "Z" designates UTC time and is mandatory.
+       Optional fractional seconds are allowed: 1995-12-31T23:59:59.999Z
+       All other components are mandatory.
+
+Expressions can also be used to denote calculations that should be
+performed relative to "NOW" to determine the value, ie...
+
+NOW/HOUR
+... Round to the start of the current hour
+NOW-1DAY
+... Exactly 1 day prior to now
+NOW/DAY+6MONTHS+3DAYS
+... 6 months and 3 days in the future from the start of
+the current day
+
+Consult the DateField javadocs for more information.
+
+Note: For faster range queries, consider the tdate type
+  -->
+  <fieldType name="date" class="solr.TrieDateField" precisionStep="0" positionIncrementGap="0"/>
+  <!-- A Trie based date field for faster date range queries and date faceting. -->
+  <fieldType name="tdate" class="solr.TrieDateField" precisionStep="6" positionIncrementGap="0"/>
+  <!--Binary data type. The data should be sent/retrieved in as Base64 encoded Strings -->
+  <fieldtype name="binary" class="solr.BinaryField"/>
+  <!-- The "RandomSortField" is not used to store or search any
+       data.  You can declare fields of this type it in your schema
+       to generate pseudo-random orderings of your docs for sorting
+       or function purposes.  The ordering is generated based on the field
+       name and the version of the index. As long as the index version
+       remains unchanged, and the same field name is reused,
+       the ordering of the docs will be consistent.
+       If you want different psuedo-random orderings of documents,
+       for the same version of the index, use a dynamicField and
+       change the field name in the request.
+  -->
+  <fieldType name="random" class="solr.RandomSortField" indexed="true"/>
+  <!-- solr.TextField allows the specification of custom text analyzers
+       specified as a tokenizer and a list of token filters. Different
+       analyzers may be specified for indexing and querying.
+
+The optional positionIncrementGap puts space between multiple fields of
+this type on the same document, with the purpose of preventing false phrase
+matching across fields.
+
+For more info on customizing your analyzer chain, please see
+http://wiki.apache.org/solr/AnalyzersTokenizersTokenFilters
+  -->
+  <!-- One can also specify an existing Analyzer class that has a
+       default constructor via the class attribute on the analyzer element.
+       Example:
+       <fieldType name="text_greek" class="solr.TextField">
+       <analyzer class="org.apache.lucene.analysis.el.GreekAnalyzer"/>
+       </fieldType>
+  -->
+
+  <!-- A text field that only splits on whitespace for exact matching of
+       words -->
+  <fieldType name="text_ws" class="solr.TextField" positionIncrementGap="100">
+    <analyzer>
+      <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+    </analyzer>
+  </fieldType>
+  <!-- A general text field that has reasonable, generic
+       cross-language defaults: it tokenizes with StandardTokenizer,
+       removes stop words from case-insensitive "stopwords.txt"
+       (empty by default), and down cases.  At query time only, it
+       also applies synonyms. -->
+  <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
+    <analyzer type="index">
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <!-- in this example, we will only use synonyms at query time
+           <filter class="solr.SynonymFilterFactory" synonyms="index_synonyms.txt" ignoreCase="true" expand="false"/>
+      -->
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <!-- charFilter + WhitespaceTokenizer  -->
+  <!--
+      <fieldType name="text_char_norm" class="solr.TextField" positionIncrementGap="100" >
+      <analyzer>
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-ISOLatin1Accent.txt"/>
+      <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+      </analyzer>
+      </fieldType>
+  -->
+  <!-- This is an example of using the KeywordTokenizer along
+       With various TokenFilterFactories to produce a sortable field
+       that does not include some properties of the source text
+  -->
+  <fieldType name="alphaNumSort" class="solr.TextField" sortMissingLast="true" omitNorms="true">
+    <analyzer>
+      <!-- KeywordTokenizer does no actual tokenizing, so the entire
+           input string is preserved as a single token
+      -->
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <!-- The LowerCase TokenFilter does what you expect, which can be
+           when you want your sorting to be case insensitive
+      -->
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <!-- The TrimFilter removes any leading or trailing whitespace -->
+      <filter class="solr.TrimFilterFactory"/>
+      <!--
+          Beccause the KeywordTokenizerFactory is used, which emits a
+          single stream, the standard stopWord filter won't work here,
+          so instead the patterReplaceFilter is used to remove any
+          common stop words. If this pattern starts to include words
+          that are specific to a particular field, then this entire
+          fieldType should be moved into the approriate core's schema
+          file instead.
+      -->
+      <filter class="solr.PatternReplaceFilterFactory"
+              pattern="(^?( *the *)$?)" replacement="" replace="all"/>
+
+      <!-- The PatternReplaceFilter gives you the flexibility to use Java
+           Regular expression to replace any sequence of characters matching
+           a pattern with an arbitrary replacement string, which may include
+           back references to portions of the original string matched by the
+           pattern.
+
+           See the Java Regular Expression documentation for more
+           information on pattern and replacement string syntax.
+
+           http://java.sun.com/j2se/1.6.0/docs/api/java/util/regex/package-summary.html
+      -->
+      <filter class="solr.PatternReplaceFilterFactory"
+              pattern="([^a-z0-9])" replacement="" replace="all"/>
+
+    </analyzer>
+  </fieldType>
+
+  <fieldtype name="phonetic" stored="true" indexed="true" class="solr.TextField">
+    <analyzer>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.DoubleMetaphoneFilterFactory" inject="false"/>
+    </analyzer>
+  </fieldtype>
+  <fieldtype name="payloads" stored="true" indexed="true" class="solr.TextField">
+    <analyzer>
+      <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+      <!--
+          The DelimitedPayloadTokenFilter can put payloads on
+          tokens... for example, a token of "foo|1.4" would be indexed
+          as "foo" with a payload of 1.4f Attributes of the
+          DelimitedPayloadTokenFilterFactory : "delimiter" - a one
+          character delimiter. Default is | (pipe) "encoder" - how to
+          encode the following value into a playload float ->
+          org.apache.lucene.analysis.payloads.FloatEncoder, integer ->
+          o.a.l.a.p.IntegerEncoder identity ->
+          o.a.l.a.p.IdentityEncoder Fully Qualified class name
+          implementing PayloadEncoder, Encoder must have a no arg
+          constructor.
+      -->
+      <filter class="solr.DelimitedPayloadTokenFilterFactory" encoder="float"/>
+    </analyzer>
+  </fieldtype>
+  <!-- lowercases the entire field value, keeping it as a single token.  -->
+  <fieldType name="lowercase" class="solr.TextField" positionIncrementGap="100">
+    <analyzer>
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  <!--
+      Example of using PathHierarchyTokenizerFactory at index time, so
+      queries for paths match documents at that path, or in descendent paths
+  -->
+  <fieldType name="descendent_path" class="solr.TextField">
+    <analyzer type="index">
+      <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="/"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+    </analyzer>
+  </fieldType>
+  <!--
+      Example of using PathHierarchyTokenizerFactory at query time, so
+      queries for paths match documents at that path, or in ancestor paths
+  -->
+  <fieldType name="ancestor_path" class="solr.TextField">
+    <analyzer type="index">
+      <tokenizer class="solr.KeywordTokenizerFactory"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="/"/>
+    </analyzer>
+  </fieldType>
+  <!-- since fields of this type are by default not stored or indexed,
+       any data added to them will be ignored outright.  -->
+  <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField"/>
+  <!-- An alternative geospatial field type new to Solr 4.  It supports multiValued and polygon shapes.
+       For more information about this and other Spatial fields new to Solr 4, see:
+       http://wiki.apache.org/solr/SolrAdaptersForLuceneSpatial4
+  -->
+</types>
