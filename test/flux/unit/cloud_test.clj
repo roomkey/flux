@@ -1,4 +1,4 @@
-(ns flux.unit.cloud
+(ns flux.unit.cloud-test
   (:require [clojure.test :refer :all]
             [flux.cloud :as cloud])
   (:import [org.apache.solr.client.solrj.impl CloudSolrClient]))

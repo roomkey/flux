@@ -1,4 +1,4 @@
-(ns flux.unit.http
+(ns flux.unit.http-test
   (:require [clojure.test :refer :all]
             [flux.http :as http])
   (:import [org.apache.solr.client.solrj.impl HttpSolrClient]))

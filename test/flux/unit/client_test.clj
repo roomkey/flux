@@ -1,4 +1,4 @@
-(ns flux.unit.client
+(ns flux.unit.client-test
   (:require [flux.embedded :as e]
             [flux.client :as solr]
             [flux.update :as update]
@@ -94,4 +94,4 @@
     (let [results  (db-state-with-adds conn series-of-adds)
           expected (reduce-by-id series-of-adds)]
       (every? (fn [[key val]]
-                (map-subset? val (get results key))) expected))))
+                (map-superset? (get results key) val)) expected))))

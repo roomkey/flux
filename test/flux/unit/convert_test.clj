@@ -1,4 +1,4 @@
-(ns flux.unit.convert
+(ns flux.unit.convert-test
   (:import [org.apache.solr.common.util NamedList])
   (:require [flux.update :as update]
             [flux.convert :as convert]
