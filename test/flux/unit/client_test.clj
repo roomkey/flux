@@ -31,7 +31,6 @@
         :doc-collection (s/coll-of ::solr-document
                           :min-count 1)))
 
-
 (defn reduce-by-id
   "Given a collection of solr inputs, returns a map from document id to ending
   document value."
