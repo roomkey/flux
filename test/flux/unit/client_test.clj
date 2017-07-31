@@ -5,9 +5,10 @@
             [clojure.java.io :as io]
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
+            [clojure.test :refer :all]
             [clojure.test.check.properties :as prop]
-            [clojure.test.check :as tc]
-            [clojure.test.check.clojure-test :refer :all]))
+            [clojure.test.check.clojure-test :refer :all]
+            [medley.core :as u]))
 
 (def cc (e/create-core-container "test/resources/solr"))
 (def conn (e/create cc "core1"))
@@ -30,16 +31,6 @@
         :doc-collection (s/coll-of ::solr-document
                           :min-count 1)))
 
-(defn keep-last-by [id coll]
-  (let [seen (atom #{})]
-    (->> coll
-      (reverse)
-      (remove (fn [x]
-                (let [key   (get x id)
-                      seen? (contains? @seen key)]
-                  (swap! seen conj key)
-                  seen?)))
-      (reverse))))
 
 (defn reduce-by-id
   "Given a collection of solr inputs, returns a map from document id to ending
@@ -50,19 +41,19 @@
                         (if (map? input)
                           (vector input)
                           input)))
-                 ;; Documents with the same id are overridden until commits happen
-                 (map #(keep-last-by :id %))
                  (apply concat))]
     (reduce
       (fn [acc input]
-        (update acc (:id input) merge (dissoc input :id)))
+        (assoc acc (:id input) (dissoc input :id)))
       {} inputs)))
 
 (defn map-superset?
   "Returns true if m1 is a superset of m2. Does not work recursively."
   [m1 m2]
-  (= m2 (select-keys m1 (keys m2))))
-
+  ;; Removes falsey values
+  (let [m1 (u/filter-vals identity m1)
+        m2 (u/filter-vals identity m2)]
+    (= m2 (select-keys m1 (keys m2)))))
 
 (defn query-all
   "Full query of every document in a solr connection. Walks results pagination."
@@ -75,7 +66,6 @@
     (apply concat)
     (reduce (fn [acc doc]
               (assoc acc (:id doc) (dissoc doc :id))) {})))
-
 
 (defn db-state-with-adds
   "Applies a series of adds to the solr connection, queries everything and
@@ -95,3 +85,5 @@
           expected (reduce-by-id series-of-adds)]
       (every? (fn [[key val]]
                 (map-superset? (get results key) val)) expected))))
+
+;; TODO add generative test for partial updates and deletes

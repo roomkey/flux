@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema name="test1" version="1.0">
 
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="fields.xml"/>
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="field_types.xml"/>
-
   <uniqueKey>id</uniqueKey>
 
   <fields>
+    <field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+    <field name="_version_" type="long" indexed="true" stored="true" multiValued="false" docValues="true"/>
     <field name="name" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="code" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="is_primary" stored="true" type="boolean" multiValued="false" indexed="true"/>
   </fields>
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="field_types.xml"/>
 
   <copyFields>
     <copyField source="name" dest="name_text"/>
