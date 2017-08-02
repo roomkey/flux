@@ -1,4 +1,4 @@
-(ns {:deprecated true}
+(ns ^:deprecated
   flux.core
   "Deprecated namespace for using the flux client functions in a
   with-connnection binding."
