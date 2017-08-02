@@ -1,9 +1,11 @@
 (ns flux.embedded
+  (:require [clojure.java.io :as io])
   (:import [java.io File]
-          [org.apache.solr.client.solrj.embedded EmbeddedSolrServer]
-          [org.apache.solr.core CoreContainer]
-          [java.nio.file Paths]
-          [java.net URI]))
+           [org.apache.solr.client.solrj.embedded EmbeddedSolrServer]
+           [org.apache.solr.core CoreContainer]
+           [org.apache.solr.client.solrj.request CoreAdminRequest$Create CoreAdminRequest]
+           [java.nio.file Paths]
+           [java.net URI]))
 
 (defn- str->path [str-path]
   (-> (File. str-path)
@@ -29,3 +31,29 @@
 (defn create [^CoreContainer core-container core-name]
   {:pre [(some #(% core-name) [string? keyword?])]}
   (EmbeddedSolrServer. core-container (name core-name)))
+
+;; Dev cores ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn temp-solr-directory
+  ([] (temp-solr-directory ""))
+  ([dir-prefix]
+   (let [path     (java.nio.file.Files/createTempDirectory dir-prefix
+                    (into-array java.nio.file.attribute.FileAttribute []))
+         path-str (.toString path)]
+     (spit (io/file path-str "solr.xml") "<solr></solr>")
+
+     (doto (io/file path-str "managed-schema")
+       (spit "<schema name=\"dev\" version=\"1.6\">\n    <dynamicField name=\"*\" type=\"string\" indexed=\"true\" stored=\"true\"  multiValued=\"true\"/>\n    <copyField source=\"*\" dest=\"text\"/>\n\n    <fieldType name=\"string\" class=\"solr.StrField\"/>\n\n    <fieldType name=\"text_basic\" class=\"solr.TextField\">\n        <analyzer>\n            <tokenizer class=\"solr.LowerCaseTokenizerFactory\" />\n        </analyzer>\n    </fieldType>\n</schema>"))
+
+     (doto (io/file path-str "solrconfig.xml")
+       (spit "<config>\n    <luceneMatchVersion>6.2.0</luceneMatchVersion>\n    <requestHandler name=\"/select\" class=\"solr.SearchHandler\" >\n        <lst name=\"defaults\">\n            <str name=\"df\">text</str>\n        </lst>\n    </requestHandler>\n</config>"))
+
+     path)))
+
+(defn create-dev-core [core-name]
+  (let [solr-dir (str (temp-solr-directory))
+        cc       (create-core-container solr-dir)]
+    (let [client (create cc core-name)]
+      (CoreAdminRequest/createCore core-name (str solr-dir) client)
+      {:core-container cc
+       :core           client})))
