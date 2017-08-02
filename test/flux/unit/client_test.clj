@@ -2,6 +2,7 @@
   (:require [flux.embedded :as e]
             [flux.client :as solr]
             [flux.update :as update]
+            [flux.spec :as spec]
             [clojure.java.io :as io]
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
@@ -13,12 +14,9 @@
 (def cc (e/create-core-container "test/resources/solr"))
 (def conn (e/create cc "core1"))
 
-(def not-empty-string? (s/and string?
-                              #(not (clojure.string/blank? %))))
-
-(s/def ::id not-empty-string?)
-(s/def ::name not-empty-string?)
-(s/def ::code not-empty-string?)
+(s/def ::id spec/not-empty-string?)
+(s/def ::name spec/not-empty-string?)
+(s/def ::code spec/not-empty-string?)
 (s/def ::is_primary boolean?)
 
 (s/def ::solr-document

@@ -4,6 +4,9 @@
             [clojure.spec.alpha :as s]
             [medley.core :as u]))
 
+(def not-empty-string? (s/and string?
+                              #(not (clojure.string/blank? %))))
+
 (s/def ::input-document-key (s/and (s/or :keyword keyword? :string string?)
                                    #(not (clojure.string/blank? (name (val %))))))
 
