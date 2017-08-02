@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
   <luceneMatchVersion>8.0.0</luceneMatchVersion>
-  	<dataDir>${solr.data.dir:}</dataDir>
+  <dataDir>${solr.data.dir:}</dataDir>
 	<directoryFactory name="DirectoryFactory" class="${solr.directoryFactory:solr.NRTCachingDirectoryFactory}"/>
 	<indexConfig>
           <lockType>single</lockType>
