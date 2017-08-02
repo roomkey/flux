@@ -1,6 +1,7 @@
 (ns flux.spec
   (:require [flux.update :as update]
             [flux.convert :as convert]
+            [flux.schema :as schema]
             [clojure.spec.alpha :as s]
             [medley.core :as u]))
 
@@ -41,3 +42,21 @@
   :args (s/cat :input-document ::input-document)
   :fn #(= (convert/->clojure (:ret %))
           (convert-input-document (-> % :args :input-document))))
+
+
+(s/def :solr-field/name not-empty-string?)
+(s/def :solr-field/type (s/with-gen string?
+                          #(s/gen #{"string" #_"boolean"})))
+(s/def :solr-field/stored boolean?)
+(s/def :solr-field/indexed boolean?)
+(s/def :solr-field/docValues boolean?)
+(s/def :solr-field/multiValued boolean?)
+
+(s/def ::field-attributes
+  (s/keys
+    :req-un [:solr-field/name :solr-field/type]
+    :opt-un [:solr-field/stored :solr-field/indexed :solr-field/docValues :solr-field/multiValued]))
+
+(s/fdef schema/add-fields
+  :args (s/or ::field-attributes
+              (s/coll-of ::field-attributes)))
