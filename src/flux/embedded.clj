@@ -40,7 +40,8 @@
    (let [path     (java.nio.file.Files/createTempDirectory dir-prefix
                     (into-array java.nio.file.attribute.FileAttribute []))
          path-str (.toString path)]
-     (spit (io/file path-str "solr.xml") "<solr></solr>")
+     (doto (io/file path-str "solr.xml")
+       (spit "<solr></solr>"))
 
      (doto (io/file path-str "managed-schema")
        (spit "<schema name=\"dev\" version=\"1.6\">\n    <dynamicField name=\"*\" type=\"string\" indexed=\"true\" stored=\"true\"  multiValued=\"true\"/>\n    <copyField source=\"*\" dest=\"text\"/>\n\n    <fieldType name=\"string\" class=\"solr.StrField\"/>\n\n    <fieldType name=\"text_basic\" class=\"solr.TextField\">\n        <analyzer>\n            <tokenizer class=\"solr.LowerCaseTokenizerFactory\" />\n        </analyzer>\n    </fieldType>\n</schema>"))
@@ -56,4 +57,5 @@
     (let [client (create cc core-name)]
       (CoreAdminRequest/createCore core-name (str solr-dir) client)
       {:core-container cc
-       :core           client})))
+       :core           (first (.getCores cc))
+       :client         client})))
