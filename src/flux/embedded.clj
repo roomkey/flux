@@ -54,8 +54,8 @@
 (defn create-dev-core [core-name]
   (let [solr-dir (str (temp-solr-directory))
         cc       (create-core-container solr-dir)]
-    (let [client (create cc core-name)]
-      (CoreAdminRequest/createCore core-name (str solr-dir) client)
+    (let [conn (create cc core-name)]
+      (CoreAdminRequest/createCore core-name (str solr-dir) conn)
       {:core-container cc
        :core           (first (.getCores cc))
-       :client         client})))
+       :conn           conn})))
