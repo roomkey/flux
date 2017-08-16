@@ -3,6 +3,7 @@
   (:import [org.apache.solr.client.solrj.request.schema SchemaRequest$AddField]))
 
 
+;; TODO stringify keywords
 (defn add-fields [conn fields]
   (let [fields (if (sequential? fields) fields (vector fields))]
     (doseq [field fields]
