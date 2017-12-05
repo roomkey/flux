@@ -13,7 +13,6 @@
   :description "A clojure client library for Solr"
   :url "https://github.com/roomkey/flux"
   :plugins [[com.roomkey/lein-v "6.0.2"]]
-  :mirrors {#"http://maven.restlet.org" "https://maven.restlet.com"}
   :repositories {"rk-public" {:url "https://rk-maven-public.c0pt3r.com/releases/"}
                  "releases" {:url "s3://rk-maven/releases/"}}
   :release-tasks [["vcs" "assert-committed"]
