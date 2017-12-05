@@ -5,16 +5,16 @@
 
 (defn deps []
   (-> (slurp "deps.edn")
-    (read-string)
-    (:deps)
-    (deps->pom-deps)))
-
+      (read-string)
+      (:deps)
+      (deps->pom-deps)))
 
 (defproject com.roomkey/flux :lein-v
   :description "A clojure client library for Solr"
   :url "https://github.com/roomkey/flux"
   :plugins [[com.roomkey/lein-v "6.0.2"]]
-  :repositories {"rk-public" {:url "http://rk-maven-public.s3-website-us-east-1.amazonaws.com/releases/"}
+  :mirrors {#"http://maven.restlet.org" "https://maven.restlet.com"}
+  :repositories {"rk-public" {:url "https://rk-maven-public.c0pt3r.com/releases/"}
                  "releases"  {:url "s3://rk-maven/releases/"}}
   :release-tasks [["vcs" "assert-committed"]
                   ["v" "update"] ;; compute new version & tag it
