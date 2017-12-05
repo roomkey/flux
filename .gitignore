@@ -1,17 +1,9 @@
-pom.xml
-*jar
-/lib/
-/classes/
-/targets/
-.lein-deps-sum
-.lein-repl-history
-/target/
-.DS_Store
-
-/.nrepl-port
+/pom.xml
 /pom.xml.asc
-.idea
-*.iml
+.lein-*
+/target
+
+/.nrepl-*
 
 # solr files
 *.bak
