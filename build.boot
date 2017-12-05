@@ -2,6 +2,7 @@
  :source-paths #{"src"}
  :dependencies '[[seancorfield/boot-tools-deps "0.1.3" :scope "test"]]
  :wagons '[[s3-wagon-private "1.2.0"]]
+ :mirrors {#"http://maven.restlet.org" "https://maven.restlet.com"}
  :repositories #(conj %
                   ["releases" {:url "s3://rk-maven/releases/"
                                :username (System/getenv "AWS_ACCESS_KEY_ID")
